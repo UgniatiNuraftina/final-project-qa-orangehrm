@@ -1,0 +1,12 @@
+{
+  "validUser": {
+    "username": "Admin",
+    "password": "admin123"
+  },
+  "unregisteredUsername": "Testing",
+  "wrongPassword": "wrongpassword",
+  "usernameUpperCase": "ADMIN",
+  "usernameWithSpaces": " Admin ",
+  "onlySpaces": "   ",
+  "longString": "aB3xQ9zP7mK2vL8nR4tW6yU1sD5fG0hJ9cX3vB6nM8qA2wE7rT4yU1iO5pL3kJ6hG9fD2sA8zX5cV1bN4mK7jH0gF3dS6aQ9wE2rT5yU8iO1pL4kJ7hG0fD3sA6zX9cV2bN5m"
+}
