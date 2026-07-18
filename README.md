@@ -2,6 +2,7 @@
 Automation testing untuk fitur **Login**, **Directory**, dan **Recruitment** pada OrangeHRM Demo (`https://opensource-demo.orangehrmlive.com`) menggunakan Cypress dengan format **Page Object Model (POM)** dan **cy.intercept()**.
 
 ## Struktur Project
+```
 Final Project QA/
 ├── cypress/
 │   ├── e2e/
@@ -20,6 +21,7 @@ Final Project QA/
 ├── cypress.config.js
 ├── package.json
 └── README.md
+```
 
 ## Total Test Case: 24 (8 per fitur)
 
