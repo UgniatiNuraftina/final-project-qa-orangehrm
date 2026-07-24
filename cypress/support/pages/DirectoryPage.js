@@ -3,49 +3,39 @@ class DirectoryPage {
     cy.visit("/web/index.php/directory/viewDirectory");
   }
 
-  get employeeNameInput() {
-    return cy.get('input[placeholder="Type for hints..."]');
+  get employeeNameInput() { return cy.get('input[placeholder="Type for hints..."]'); }
+  get invalidMessage() { return cy.contains(".oxd-input-field-error-message", "Invalid"); }
+  get jobTitleDropdown() { return cy.get(".oxd-select-text").eq(0); }
+  get locationDropdown() { return cy.get(".oxd-select-text").eq(1); }
+  get resetButton() { return cy.get('button[type="reset"]'); }
+  get searchButton() { return cy.get('button[type="submit"]'); }
+  get recordsFoundText() { return cy.contains(".oxd-text--span", "Records Found"); }
+  get employeeCards() { return cy.get(".orangehrm-directory-card"); }
+
+  // ---------- Intercept setup ----------
+  interceptSearch(alias = "searchEmployee") {
+    cy.intercept("GET", "**/api/v2/directory/employees**").as(alias);
+    return alias;
   }
 
-  get autocompleteSuggestions() {
-    return cy.get(".oxd-autocomplete-dropdown li, .oxd-autocomplete-option");
+  interceptReset(alias = "resetSearch") {
+    cy.intercept("GET", "**/api/v2/directory/employees?limit=14&offset=0").as(alias);
+    return alias;
   }
 
-  get invalidMessage() {
-    return cy.contains(".oxd-input-field-error-message", "Invalid");
+  interceptEmployeeDetail(alias = "employeeProfile") {
+    cy.intercept("GET", "**/api/v2/directory/employees/*?model=detailed").as(alias);
+    return alias;
   }
 
-  get jobTitleDropdown() {
-    return cy.get(".oxd-select-text").eq(0);
-  }
-
-  get locationDropdown() {
-    return cy.get(".oxd-select-text").eq(1);
-  }
-
-  get resetButton() {
-    return cy.get('button[type="reset"]');
-  }
-
-  get searchButton() {
-    return cy.get('button[type="submit"]');
-  }
-
-  get recordsFoundText() {
-    return cy.contains(".oxd-text--span", "Records Found");
-  }
-
-  get employeeCards() {
-    return cy.get(".orangehrm-directory-card");
-  }
-
-  typeEmployeeName(name) {
-    this.employeeNameInput.clear().type(name);
-    return this;
-  }
+  // ---------- Actions ----------
+  typeEmployeeName(name) { this.employeeNameInput.clear().type(name); return this; }
 
   selectFirstSuggestion() {
-    cy.get(".oxd-autocomplete-dropdown li, .oxd-autocomplete-option").first().click();
+    cy.get(".oxd-autocomplete-dropdown li, .oxd-autocomplete-option", { timeout: 8000 })
+      .should("be.visible")
+      .first()
+      .click();
     return this;
   }
 
@@ -61,18 +51,37 @@ class DirectoryPage {
     return this;
   }
 
-  clickSearch() {
-    this.searchButton.click();
+  clickSearch() { this.searchButton.click(); return this; }
+  clickReset() { this.resetButton.click(); return this; }
+  clickFirstEmployeeCard() { this.employeeCards.first().click(); return this; }
+
+  // ---------- Assertions ----------
+  verifySearchSuccess(alias) {
+    cy.wait(`@${alias}`).its("response.statusCode").should("eq", 200);
+    this.recordsFoundText.should("be.visible");
     return this;
   }
 
-  clickReset() {
-    this.resetButton.click();
+  verifyInvalidNoRequest(alias) {
+    this.invalidMessage.should("be.visible");
+    cy.get(`@${alias}.all`).should("have.length", 0);
     return this;
   }
 
-  clickFirstEmployeeCard() {
-    this.employeeCards.first().click();
+  verifyResetSuccess(alias) {
+    cy.wait(`@${alias}`).its("response.statusCode").should("eq", 200);
+    this.jobTitleDropdown.should("contain.text", "-- Select --");
+    return this;
+  }
+
+  verifyInitialLoad(alias) {
+    cy.wait(`@${alias}`).its("response.statusCode").should("eq", 200);
+    this.recordsFoundText.should("be.visible").and("not.contain.text", "(0)");
+    return this;
+  }
+
+  verifyEmployeeDetailLoaded(alias) {
+    cy.wait(`@${alias}`).its("response.statusCode").should("eq", 200);
     return this;
   }
 }
