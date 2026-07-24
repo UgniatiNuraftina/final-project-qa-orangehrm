@@ -47,7 +47,7 @@ npx cypress run --spec "cypress/e2e/recruitment.cy.js"
 ## Kredensial Demo
 `Admin` / `admin123`
 
-## ## Dokumentasi
+## Dokumentasi
 - Test Cases (24 test case, 8 per fitur)(./docs/Test_Cases_Final_Project_QA.xlsx)
 - Selector & API Intercept List(./docs/Selector_dan_API_List.xlsx)
 
